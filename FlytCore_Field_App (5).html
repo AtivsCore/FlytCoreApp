@@ -1,0 +1,556 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="theme-color" content="#F2F1EE">
+<title>FlytCore Field</title>
+<link href="https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&family=Outfit:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+<!--
+================================================================================
+PROPRIEDADE INTELECTUAL REGISTRADA
+================================================================================
+Sistema: AtivsCore — Asset Lifecycle Intelligence Engine
+Registro INPI: Programa de Computador — Código 730
+Autor: Murilo Rafael Voltolini
+CPF: 037.761.049-61
+Data de Criação: Abril de 2026
+Versão: 1.7
+Licença: Propriedade Intelectual Privada
+
+Este software, sua arquitetura, algoritmos, lógica de negócios, design de
+interface e documentação técnica são protegidos por direitos autorais conforme
+Lei 9.609/98 (Lei de Software) e registrados no Instituto Nacional da
+Propriedade Industrial (INPI).
+
+Qualquer reprodução, distribuição, modificação ou uso não autorizado constitui
+violação de direitos autorais e está sujeita às penalidades previstas na
+legislação brasileira.
+
+© 2026 Murilo Rafael Voltolini. Todos os direitos reservados.
+ID: FLYTCORE-FIELD-ATIVSCORE-2026-INPI730
+HASH: a7f3c9e2d1b8046f5c3a9d7e2b1f8c4a6e9d2c5f8b1a3e7d4c6f9a2b5e8d1c4f
+================================================================================
+-->
+<style>
+:root{--mono:'DM Mono',monospace;--sans:'Outfit',sans-serif;--radius:2px;--touch:52px}
+[data-theme="light"]{
+  --bg:#F2F1EE;--bg-card:#FFFFFF;--bg-alt:#F8F7F5;--bg-input:#EEEDEA;--bg-nav:#0E0E0E;
+  --border:#D4D1CB;--border-s:#B8B5AE;--text:#0E0E0E;--text-2:#4A4845;--text-3:#8A8780;
+  --accent:#0066FF;--accent-bg:#E8F0FF;--accent-bd:rgba(0,102,255,.15);
+  --green:#1A8C3F;--green-bg:#E8F5EC;--green-bd:#B8E0C2;
+  --yellow:#B8860B;--yellow-bg:#FFF8E1;--yellow-bd:#F0D88A;
+  --red:#CC2936;--red-bg:#FDE8EA;--red-bd:#F0B0B6;
+  --orange:#D4600A;
+  --shadow:0 1px 3px rgba(0,0,0,.08);
+  --ic:#6B6B6B;--ic-sh:drop-shadow(1px 1px 1px rgba(0,0,0,.15));
+}
+[data-theme="dark"]{
+  --bg:#0E0E0E;--bg-card:#1A1A1A;--bg-alt:#222;--bg-input:#151515;--bg-nav:#000;
+  --border:#2A2A2A;--border-s:#3A3A3A;--text:#E8E8E8;--text-2:#A0A0A0;--text-3:#666;
+  --accent:#4D94FF;--accent-bg:rgba(77,148,255,.12);--accent-bd:rgba(77,148,255,.2);
+  --green:#3EBF5E;--green-bg:rgba(62,191,94,.12);--green-bd:rgba(62,191,94,.3);
+  --yellow:#E8A817;--yellow-bg:rgba(232,168,23,.12);--yellow-bd:rgba(232,168,23,.3);
+  --red:#FF4D4D;--red-bg:rgba(255,77,77,.12);--red-bd:rgba(255,77,77,.3);
+  --orange:#FF8A33;
+  --shadow:0 1px 3px rgba(0,0,0,.3);
+  --ic:#888;--ic-sh:drop-shadow(1px 1px 2px rgba(0,0,0,.4));
+}
+*{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+html{font-size:15px}
+body{font-family:var(--sans);background:var(--bg);color:var(--text);min-height:100vh;min-height:100dvh;overflow-x:hidden;transition:background .2s,color .2s}
+
+/* Shell */
+.shell{max-width:480px;margin:0 auto;min-height:100vh;min-height:100dvh;display:flex;flex-direction:column;position:relative}
+@media(min-width:768px){.shell{max-width:560px}}
+@media(min-width:1024px){
+  body{display:flex;justify-content:center;background:var(--bg)}
+  .shell{max-width:100%;border:0}
+  .shell-body{display:flex;flex-direction:row;flex:1}
+  .topbar{max-width:100%}
+  .desk-side{display:flex;flex-direction:column;width:240px;background:var(--bg-card);border-right:1px solid var(--border);position:sticky;top:52px;height:calc(100vh - 52px);overflow-y:auto}
+  .desk-side .ds-head{padding:20px 16px;border-bottom:1px solid var(--border)}
+  .desk-side .ds-nav{padding:8px 0;flex:1}
+  .desk-side .ds-item{display:flex;align-items:center;gap:10px;padding:10px 16px;cursor:pointer;font-size:13px;font-weight:500;color:var(--text-2);transition:all .12s;border:0;background:0;width:100%;font-family:var(--sans);text-align:left}
+  .desk-side .ds-item:hover{background:var(--bg-alt);color:var(--text)}
+  .desk-side .ds-item.on{background:var(--accent-bg);color:var(--accent);font-weight:600;border-right:2px solid var(--accent)}
+  .desk-side .ds-item svg{width:18px;height:18px;flex-shrink:0}
+  .desk-side .ds-foot{padding:12px 16px;border-top:1px solid var(--border);font-size:10px;color:var(--text-3)}
+  .desk-main{flex:1;max-width:680px;display:flex;flex-direction:column}
+  .bnav{display:none}
+  .pg-body{padding:24px}
+}
+@media(min-width:1400px){.desk-main{max-width:760px}}
+
+/* Topbar */
+.topbar{height:52px;background:var(--bg-nav);display:flex;align-items:center;padding:0 16px;gap:10px;position:sticky;top:0;z-index:100;border-bottom:1px solid #222}
+.tb-logo{display:flex;align-items:center;gap:8px}
+.tb-mark{width:26px;height:26px;background:var(--accent);display:flex;align-items:center;justify-content:center;font:500 9px/1 var(--mono);color:#fff;letter-spacing:-.5px}
+.tb-name{font:500 12px/1 var(--mono);color:#fff;letter-spacing:1.5px}
+.tb-r{margin-left:auto;display:flex;align-items:center;gap:6px}
+.tb-btn{width:32px;height:32px;display:flex;align-items:center;justify-content:center;background:0;border:1px solid #333;color:#999;cursor:pointer;font-size:14px;transition:all .15s}
+.tb-btn:hover{border-color:#666;color:#fff}
+.sync-d{width:6px;height:6px;background:var(--green);margin-right:4px}
+.sync-t{font:400 9px/1 var(--mono);color:#666}
+
+/* Pages */
+.pg{display:none;flex:1;flex-direction:column;animation:fi .25s ease-out}
+.pg.on{display:flex}
+@keyframes fi{from{opacity:0;transform:translateY(4px)}to{opacity:1;transform:translateY(0)}}
+.pg-body{flex:1;padding:16px;padding-bottom:72px;overflow-y:auto}
+
+/* Bottom Nav */
+.bnav{height:56px;background:var(--bg-card);border-top:1px solid var(--border);display:flex;position:fixed;bottom:0;left:0;right:0;z-index:100}
+.nt{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:2px;cursor:pointer;color:var(--text-3);font:600 9px/1 var(--sans);text-transform:uppercase;letter-spacing:.5px;transition:all .15s;border-top:2px solid transparent;background:0;border-left:0;border-right:0;border-bottom:0}
+.nt svg{width:20px;height:20px;filter:var(--ic-sh)}
+.nt.on{color:var(--accent);border-top-color:var(--accent)}
+.nt-badge{position:absolute;top:-2px;right:-6px;width:14px;height:14px;background:var(--red);color:#fff;font:700 7px/14px var(--mono);text-align:center}
+
+/* Cards */
+.c{background:var(--bg-card);border:1px solid var(--border);box-shadow:var(--shadow);margin-bottom:12px;transition:background .2s}
+.ch{padding:10px 14px;border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between}
+.ct{font:700 10px/1 var(--sans);text-transform:uppercase;letter-spacing:1.5px;color:var(--text-3)}
+.cb{padding:14px}
+.cb.f{padding:0}
+.sl{font:700 9px/1 var(--sans);text-transform:uppercase;letter-spacing:2px;color:var(--text-3);margin-bottom:8px;display:flex;align-items:center;gap:6px}
+.sl::after{content:'';flex:1;height:1px;background:var(--border)}
+
+/* Industrial Icons */
+.ico{width:44px;height:44px;display:flex;align-items:center;justify-content:center;flex-shrink:0;border:1px solid var(--border);background:var(--bg-alt)}
+.ico svg{width:24px;height:24px;stroke:var(--ic);fill:none;stroke-width:1.8;filter:var(--ic-sh)}
+.ico-sm svg{width:14px;height:14px;stroke:var(--ic);fill:none;stroke-width:2;filter:var(--ic-sh)}
+
+/* Status */
+.sbar{padding:12px 14px;display:flex;align-items:center;gap:10px;font-weight:600;font-size:14px;margin-bottom:12px;border:1px solid}
+.sbar.g{background:var(--green-bg);border-color:var(--green-bd);color:var(--green)}
+.sbar.y{background:var(--yellow-bg);border-color:var(--yellow-bd);color:var(--yellow)}
+.sbar.r{background:var(--red-bg);border-color:var(--red-bd);color:var(--red)}
+.desk-side{display:none}
+.shell-body{display:flex;flex-direction:column;flex:1}
+.disc{padding:8px 12px;background:var(--red-bg);border:1px solid var(--red-bd);font-size:9px;color:var(--red);line-height:1.6;font-weight:500;margin-bottom:12px}
+
+/* Actions */
+.ag{display:flex;flex-direction:column;gap:8px;margin-bottom:16px}
+.ab{display:flex;align-items:center;gap:14px;padding:16px 14px;background:var(--bg-card);border:1px solid var(--border);cursor:pointer;transition:all .15s;min-height:var(--touch)}
+.ab:hover{border-color:var(--border-s);background:var(--bg-alt)}
+.ab:active{transform:scale(.99)}
+
+/* Buttons */
+.bp{width:100%;padding:14px;background:var(--accent);color:#fff;border:0;font:700 14px/1 var(--sans);cursor:pointer;min-height:var(--touch);transition:filter .12s;text-transform:uppercase;letter-spacing:1px}
+.bp:hover{filter:brightness(1.1)}
+.bp.gn{background:var(--green)}.bp.rd{background:var(--red)}
+.bs{width:100%;padding:12px;background:0;color:var(--text);border:1px solid var(--border);font:600 13px/1 var(--sans);cursor:pointer;min-height:var(--touch);transition:all .12s}
+.bs:hover{border-color:var(--accent);color:var(--accent)}
+
+/* Forms */
+.fd{margin-bottom:14px}
+.fl{font:700 9px/1 var(--sans);text-transform:uppercase;letter-spacing:1px;color:var(--text-3);margin-bottom:4px;display:block}
+.fi{width:100%;padding:12px;background:var(--bg-input);border:1px solid var(--border);color:var(--text);font:400 14px/1.4 var(--sans);outline:0;min-height:var(--touch);transition:border-color .15s}
+.fi:focus{border-color:var(--accent)}.fi::placeholder{color:var(--text-3)}
+select.fi{appearance:none;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' fill='%23888'%3E%3Cpath d='M6 8L1 3h10z'/%3E%3C/svg%3E");background-repeat:no-repeat;background-position:right 12px center}
+textarea.fi{resize:vertical;min-height:80px}
+.mono{font-family:var(--mono);font-weight:500}
+
+/* Photo */
+.pz{border:2px dashed var(--border);padding:24px;text-align:center;cursor:pointer;transition:border-color .15s;margin-bottom:12px}
+.pz:hover{border-color:var(--accent)}
+
+/* Urgency */
+.ug{display:grid;grid-template-columns:1fr 1fr 1fr;gap:6px}
+.uo{padding:12px 8px;border:1px solid var(--border);text-align:center;cursor:pointer;transition:all .15s;background:var(--bg-input)}
+.uo.xr{border-color:var(--red);background:var(--red-bg)}.uo.xy{border-color:var(--yellow);background:var(--yellow-bg)}.uo.xb{border-color:var(--accent);background:var(--accent-bg)}
+
+/* Components */
+.ci{display:flex;align-items:center;gap:10px;padding:10px 12px;border-bottom:1px solid var(--border);font-size:12px}
+.ci:last-child{border-bottom:0}
+.cd{width:8px;height:8px;flex-shrink:0}
+.cd.g{background:var(--green)}.cd.y{background:var(--yellow)}.cd.r{background:var(--red)}
+
+/* Tasks */
+.ti{padding:12px;border-bottom:1px solid var(--border)}
+.ti:last-child{border-bottom:0}
+.tc{display:flex;align-items:flex-start;gap:10px}
+.ck{width:24px;height:24px;border:2px solid var(--border-s);display:flex;align-items:center;justify-content:center;cursor:pointer;flex-shrink:0;margin-top:1px;transition:all .15s;font-size:14px}
+.ck.ok{background:var(--green);border-color:var(--green);color:#fff}
+.ta{display:flex;gap:6px;margin-top:8px;padding-left:34px;flex-wrap:wrap}
+.tb{padding:8px 12px;border:1px solid var(--border);background:var(--bg-input);color:var(--text-2);font:600 10px/1 var(--sans);cursor:pointer;display:flex;align-items:center;gap:4px;transition:all .12s;text-transform:uppercase;letter-spacing:.5px}
+.tb:hover{border-color:var(--accent);color:var(--accent)}
+.tb.w{border-color:var(--yellow-bd);color:var(--yellow)}
+
+/* Tracking */
+.ts{display:flex;align-items:flex-start;gap:10px;padding:8px 0;position:relative}
+.ts::before{content:'';position:absolute;left:11px;top:28px;bottom:-8px;width:1px;background:var(--border)}
+.ts:last-child::before{display:none}
+.tr{width:24px;height:24px;display:flex;align-items:center;justify-content:center;font-size:10px;flex-shrink:0;border:2px solid var(--border)}
+.tr.ok{background:var(--green);border-color:var(--green);color:#fff}
+.tr.now{border-color:var(--accent);color:var(--accent)}
+
+/* Crew bar */
+.crew{display:flex;align-items:center;gap:8px;padding:8px 12px;background:var(--accent-bg);border:1px solid var(--accent-bd);margin-bottom:12px;font-size:10px;color:var(--accent);font-weight:500}
+.av{width:22px;height:22px;display:flex;align-items:center;justify-content:center;font:700 8px/1 var(--mono);background:var(--bg-card);border:1px solid var(--border)}
+
+/* Settings */
+.sr{display:flex;align-items:center;justify-content:space-between;padding:14px 0;border-bottom:1px solid var(--border)}
+.sr:last-child{border-bottom:0}
+.tg{width:44px;height:24px;background:var(--border-s);cursor:pointer;position:relative;transition:background .2s;flex-shrink:0}
+.tg.on{background:var(--accent)}
+.tg::after{content:'';position:absolute;width:18px;height:18px;background:#fff;top:3px;left:3px;transition:left .2s}
+.tg.on::after{left:23px}
+.ls{display:flex;border:1px solid var(--border)}
+.lo{padding:6px 12px;font:600 11px/1 var(--sans);cursor:pointer;background:var(--bg-input);color:var(--text-3);transition:all .12s;border:0}
+.lo.on{background:var(--accent);color:#fff}
+
+/* GPS bar */
+.gps{padding:8px 12px;background:var(--bg-alt);border:1px solid var(--border);font-size:10px;color:var(--text-3);display:flex;align-items:center;gap:6px;margin-bottom:12px}
+
+/* Offline */
+.ofl{padding:8px 12px;background:var(--yellow-bg);border:1px solid var(--yellow-bd);font-size:11px;color:var(--yellow);font-weight:600;display:none;align-items:center;gap:6px}
+.ofl.show{display:flex}
+.pdot{width:6px;height:6px;background:var(--yellow);animation:pls 1.5s infinite;margin-left:auto}
+@keyframes pls{0%,100%{opacity:1}50%{opacity:.3}}
+
+/* History */
+.hi{display:flex;gap:10px;padding:10px 0;border-bottom:1px solid var(--border)}
+.hi:last-child{border-bottom:0}
+.hd{width:8px;height:8px;margin-top:5px;flex-shrink:0}
+.hp{display:flex;gap:4px;margin-top:6px}
+.hpx{width:40px;height:30px;background:var(--bg-input);border:1px solid var(--border);display:flex;align-items:center;justify-content:center;font:400 8px/1 var(--mono);color:var(--text-3)}
+
+/* Scan */
+.scan-a{display:flex;flex-direction:column;align-items:center;justify-content:center;flex:1;padding:24px;padding-bottom:72px;text-align:center}
+.scan-f{width:220px;height:220px;border:2px solid var(--accent);position:relative;margin:24px 0;overflow:hidden}
+.sc1::before,.sc1::after{content:'';position:absolute;width:30px;height:30px;border-color:var(--accent);border-style:solid}
+.sc1::before{top:0;left:0;border-width:3px 0 0 3px}.sc1::after{top:0;right:0;border-width:3px 3px 0 0}
+.sc2::before,.sc2::after{content:'';position:absolute;width:30px;height:30px;border-color:var(--accent);border-style:solid}
+.sc2::before{bottom:0;left:0;border-width:0 0 3px 3px}.sc2::after{bottom:0;right:0;border-width:0 3px 3px 0}
+.scl{position:absolute;left:10%;right:10%;height:2px;background:var(--accent);box-shadow:0 0 10px var(--accent);animation:sm 2.5s ease-in-out infinite}
+@keyframes sm{0%,100%{top:10%}50%{top:90%}}
+
+/* Login */
+.lctr{display:flex;flex-direction:column;align-items:center;justify-content:center;flex:1;padding:32px;text-align:center}
+</style>
+</head>
+<body data-theme="light">
+<div class="shell">
+
+<!-- TOPBAR -->
+<div class="topbar">
+  <div class="tb-logo"><div class="tb-mark" style="width:30px;font-size:8px">FLC</div><span class="tb-name">FLYTCORE</span></div>
+  <div class="tb-r"><div class="sync-d"></div><span class="sync-t">Online</span>
+    <button class="tb-btn" onclick="toggleTheme()" id="thBtn">&#9788;</button>
+    <button class="tb-btn" onclick="nav('settings')">&#9881;</button>
+  </div>
+</div>
+<div class="ofl" id="oflBar">&#9888; <span data-i18n="offline">Offline — 2 itens aguardando sync</span><div class="pdot"></div></div>
+
+<!-- SHELL BODY (row on desktop) -->
+<div class="shell-body">
+
+<!-- DESKTOP SIDEBAR -->
+<div class="desk-side" id="deskSide">
+  <div class="ds-head">
+    <div style="font:700 14px/1 var(--mono);letter-spacing:1.5px">FLYTCORE</div>
+    <div style="font-size:10px;color:var(--text-3);margin-top:4px">Field · Desktop Mode</div>
+  </div>
+  <div class="ds-nav">
+    <button class="ds-item on" onclick="dnav('scan',this)"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="18"/><line x1="9" y1="3" x2="9" y2="21"/><line x1="15" y1="3" x2="15" y2="21"/><line x1="3" y1="9" x2="21" y2="9"/><line x1="3" y1="15" x2="21" y2="15"/></svg> Scan</button>
+    <button class="ds-item" onclick="dnav('maint',this)"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14.7 6.3a1 1 0 000 1.4l1.6 1.6a1 1 0 001.4 0l3.77-3.77a6 6 0 01-7.94 7.94l-6.91 6.91a2.12 2.12 0 01-3-3l6.91-6.91a6 6 0 017.94-7.94l-3.76 3.76z"/></svg> Tarefas</button>
+    <button class="ds-item" onclick="dnav('history',this)"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg> Histórico</button>
+    <button class="ds-item" onclick="dnav('settings',this)"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 00.33 1.82l.06.06a2 2 0 01-2.83 2.83l-.06-.06a1.65 1.65 0 00-1.82-.33"/></svg> Config</button>
+  </div>
+  <div class="ds-foot">
+    <div style="display:flex;align-items:center;gap:6px;margin-bottom:4px"><div class="av">JC</div><strong>João Costa</strong></div>
+    <div>CANAC 4521-MCA · Curitiba</div>
+  </div>
+</div>
+
+<!-- MAIN CONTENT AREA -->
+<div class="desk-main">
+
+<!-- ====== LOGIN ====== -->
+<div class="pg on" id="pg-login">
+  <div class="lctr">
+    <div style="width:48px;height:48px;background:var(--accent);display:flex;align-items:center;justify-content:center;margin-bottom:16px"><span style="font:500 14px/1 var(--mono);color:#fff">FLC</span></div>
+    <div style="font:700 18px/1 var(--mono);letter-spacing:2px;margin-bottom:4px">FLYTCORE FIELD</div>
+    <div style="font-size:11px;color:var(--text-3);margin-bottom:24px" data-i18n="login_sub">Gestão de Ativos em Campo</div>
+    <div style="width:100%;max-width:320px">
+      <div class="fd"><label class="fl">Email</label><input class="fi" type="email" value="operador@empresa.com"></div>
+      <div class="fd"><label class="fl" data-i18n="password">Senha</label><input class="fi" type="password" value="12345678"></div>
+      <button class="bp" onclick="nav('scan')" data-i18n="login_btn">Entrar</button>
+      <div style="font-size:9px;color:var(--text-3);margin-top:12px" data-i18n="login_secure">Acesso seguro · AES-256 · 2FA disponível</div>
+    </div>
+  </div>
+</div>
+
+<!-- ====== SCAN ====== -->
+<div class="pg" id="pg-scan">
+  <div class="scan-a">
+    <div style="font-size:16px;font-weight:700;margin-bottom:4px" data-i18n="scan_title">Escanear Aeronave</div>
+    <div style="font-size:12px;color:var(--text-3)" data-i18n="scan_sub">Aponte a câmera para o QR Code</div>
+    <div class="scan-f"><div class="sc1"></div><div class="sc2"></div><div class="scl"></div></div>
+    <button class="bp" onclick="nav('aircraft')" style="margin-bottom:8px" data-i18n="scan_simulate">Simular Scan — PR-HTX</button>
+    <button class="bs" data-i18n="scan_manual">Digitar prefixo manualmente</button>
+  </div>
+</div>
+
+<!-- ====== AIRCRAFT — 3 ACTIONS ====== -->
+<div class="pg" id="pg-aircraft">
+  <div class="pg-body">
+    <!-- Header -->
+    <div class="c"><div class="cb" style="display:flex;align-items:center;gap:14px">
+      <div style="flex:1"><div style="font:700 22px/1 var(--mono);letter-spacing:2px">PR-HTX</div><div style="font-size:12px;color:var(--text-2)">Airbus EC135 T3 · S/N 2104</div><div style="font:500 10px/1 var(--mono);color:var(--text-3);margin-top:4px">4.872,3h · 2.341 ciclos</div></div>
+      <div style="text-align:right"><div style="font:500 28px/1 var(--mono);color:var(--green)">92</div><div style="font:700 8px/1 var(--sans);color:var(--text-3);text-transform:uppercase;letter-spacing:1px;margin-top:2px">Score</div></div>
+    </div></div>
+
+    <!-- Crew working -->
+    <div class="crew">
+      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 00-3-3.87"/><path d="M16 3.13a4 4 0 010 7.75"/></svg>
+      <span data-i18n="crew_active">2 mecânicos ativos nesta aeronave</span>
+      <div style="margin-left:auto;display:flex;gap:2px"><div class="av">JC</div><div class="av">CM</div></div>
+    </div>
+
+    <!-- Semaphore -->
+    <div class="sbar g">
+      <svg width="18" height="18" viewBox="0 0 24 24"><circle cx="12" cy="12" r="8" fill="var(--green)" stroke="none"/></svg>
+      <div><div style="font-size:12px" data-i18n="status_ok">12 itens dentro do prazo</div><div style="font-size:10px;font-weight:400;opacity:.8;margin-top:2px" data-i18n="status_next">Próximo vencimento: 124h</div></div>
+    </div>
+
+    <div class="disc" data-i18n="disclaimer">&#9888; ESTE STATUS NÃO É CERTIFICAÇÃO DE AERONAVEGABILIDADE. A liberação é de responsabilidade exclusiva do profissional habilitado (RBAC 43/145).</div>
+
+    <!-- 3 BUTTONS -->
+    <div class="sl" data-i18n="actions_label">Ações</div>
+    <div class="ag">
+      <!-- 1: Report -->
+      <div class="ab" onclick="nav('report')" style="border-left:3px solid var(--red)">
+        <div class="ico" style="background:var(--red-bg);border-color:var(--red-bd)"><svg viewBox="0 0 24 24"><path d="M10.29 3.86L1.82 18a2 2 0 001.71 3h16.94a2 2 0 001.71-3L13.71 3.86a2 2 0 00-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg></div>
+        <div><div style="font-size:14px;font-weight:700" data-i18n="btn_report">Reportar Problema</div><div style="font-size:11px;color:var(--text-3);margin-top:2px" data-i18n="btn_report_d">Qualquer tripulante pode reportar</div></div><span style="margin-left:auto;color:var(--text-3)">&#8594;</span>
+      </div>
+      <!-- 2: History -->
+      <div class="ab" onclick="nav('history')" style="border-left:3px solid var(--accent)">
+        <div class="ico" style="background:var(--accent-bg);border-color:var(--accent-bd)"><svg viewBox="0 0 24 24"><path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/></svg></div>
+        <div><div style="font-size:14px;font-weight:700" data-i18n="btn_history">Histórico e Auditoria</div><div style="font-size:11px;color:var(--text-3);margin-top:2px" data-i18n="btn_history_d">Relatório completo da aeronave</div></div><span style="margin-left:auto;color:var(--text-3)">&#8594;</span>
+      </div>
+      <!-- 3: Maintenance -->
+      <div class="ab" onclick="nav('maint')" style="border-left:3px solid var(--green)">
+        <div class="ico" style="background:var(--green-bg);border-color:var(--green-bd)"><svg viewBox="0 0 24 24"><path d="M14.7 6.3a1 1 0 000 1.4l1.6 1.6a1 1 0 001.4 0l3.77-3.77a6 6 0 01-7.94 7.94l-6.91 6.91a2.12 2.12 0 01-3-3l6.91-6.91a6 6 0 017.94-7.94l-3.76 3.76z"/></svg></div>
+        <div><div style="font-size:14px;font-weight:700" data-i18n="btn_maint">Executar Manutenção</div><div style="font-size:11px;color:var(--text-3);margin-top:2px" data-i18n="btn_maint_d">Acesso exclusivo para mecânicos</div></div><span style="margin-left:auto;color:var(--text-3)">&#8594;</span>
+      </div>
+    </div>
+
+    <!-- Components -->
+    <div class="sl" data-i18n="comp_urgent">Componentes Urgentes</div>
+    <div class="c"><div class="cb f">
+      <div class="ci"><span class="cd y"></span><span class="mono" style="min-width:90px;font-size:11px">6871103-A</span><span style="flex:1;color:var(--text-2);font-size:11px">Starter Generator</span><span class="mono" style="font-size:11px;color:var(--yellow)">124h</span></div>
+      <div class="ci"><span class="cd y"></span><span class="mono" style="min-width:90px;font-size:11px">0530035-3</span><span style="flex:1;color:var(--text-2);font-size:11px">Servo Coletivo</span><span class="mono" style="font-size:11px;color:var(--yellow)">187h</span></div>
+      <div class="ci"><span class="cd g"></span><span class="mono" style="min-width:90px;font-size:11px">3G6220V03</span><span style="flex:1;color:var(--text-2);font-size:11px">Turbina Arrius 2B2+</span><span class="mono" style="font-size:11px;color:var(--green)">1.240h</span></div>
+      <div class="ci"><span class="cd g"></span><span class="mono" style="min-width:90px;font-size:11px">EC135-MGB</span><span style="flex:1;color:var(--text-2);font-size:11px">Main Gearbox</span><span class="mono" style="font-size:11px;color:var(--green)">4.440h</span></div>
+    </div></div>
+
+    <!-- Recent Reports -->
+    <div class="sl" data-i18n="recent_reports">Reportes Recentes</div>
+    <div class="c"><div class="cb" style="font-size:11px">
+      <div style="display:flex;align-items:center;gap:8px;padding:6px 0;border-bottom:1px solid var(--border)"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="var(--yellow)" stroke-width="2"><path d="M10.29 3.86L1.82 18a2 2 0 001.71 3h16.94a2 2 0 001.71-3L13.71 3.86a2 2 0 00-3.42 0z"/></svg><div style="flex:1"><strong>Vibração leve no pedal</strong> — Piloto Marcos Silva<br><span style="color:var(--text-3);font:400 9px/1 var(--mono)">05/04/2026 · Observação · Resolvido</span></div></div>
+      <div style="display:flex;align-items:center;gap:8px;padding:6px 0"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="var(--green)" stroke-width="2"><path d="M22 11.08V12a10 10 0 11-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg><div style="flex:1"><strong>Luz aviso hidráulico</strong> — Copiloto Ana Reis<br><span style="color:var(--text-3);font:400 9px/1 var(--mono)">28/03/2026 · Restrição · Resolvido</span></div></div>
+    </div></div>
+  </div>
+</div>
+
+<!-- ====== REPORT ====== -->
+<div class="pg" id="pg-report">
+  <div class="pg-body">
+    <button class="bs" onclick="nav('aircraft')" style="width:auto;padding:8px 14px;font-size:11px;margin-bottom:16px">&#8592; <span data-i18n="back">Voltar</span></button>
+    <div style="font-size:16px;font-weight:700;margin-bottom:4px" data-i18n="report_title">Reportar Problema</div>
+    <div style="font-size:11px;color:var(--text-3);margin-bottom:16px" data-i18n="report_sub">Qualquer tripulante pode registrar uma ocorrência.</div>
+    <div class="c"><div class="cb" style="font:600 13px/1 var(--mono)">PR-HTX <span style="color:var(--text-3);font-weight:400">· EC135 T3</span></div></div>
+    <div class="fd"><label class="fl" data-i18n="report_who">Reportado por</label><select class="fi"><option data-i18n="role_pilot">Piloto em Comando</option><option data-i18n="role_copilot">Copiloto</option><option data-i18n="role_crew">Tripulante</option><option data-i18n="role_mech">Mecânico</option></select></div>
+    <div class="fd"><label class="fl" data-i18n="report_name">Nome</label><input class="fi" placeholder="Seu nome..."></div>
+    <div class="fd"><label class="fl" data-i18n="report_type">Tipo</label><select class="fi"><option data-i18n="prob_vibration">Vibração anormal</option><option data-i18n="prob_noise">Ruído atípico</option><option data-i18n="prob_leak">Vazamento</option><option data-i18n="prob_instrument">Falha de instrumento</option><option data-i18n="prob_electrical">Problema elétrico</option><option data-i18n="prob_other">Outro</option></select></div>
+    <div class="fd"><label class="fl" data-i18n="report_severity">Severidade</label>
+      <div class="ug">
+        <div class="uo xr" onclick="su(this,'xr')"><div style="font-size:12px;font-weight:700;color:var(--red)">AOG</div><div style="font-size:8px;color:var(--text-3);margin-top:2px;text-transform:uppercase" data-i18n="sev_aog">Não pode voar</div></div>
+        <div class="uo" onclick="su(this,'xy')"><div style="font-size:12px;font-weight:700">Restrição</div><div style="font-size:8px;color:var(--text-3);margin-top:2px;text-transform:uppercase" data-i18n="sev_restrict">Voa com limitação</div></div>
+        <div class="uo" onclick="su(this,'xb')"><div style="font-size:12px;font-weight:700">Observação</div><div style="font-size:8px;color:var(--text-3);margin-top:2px;text-transform:uppercase" data-i18n="sev_obs">Monitorar</div></div>
+      </div>
+    </div>
+    <div class="fd"><label class="fl" data-i18n="report_desc">Descrição</label><textarea class="fi" placeholder="Descreva..." rows="4"></textarea><div style="display:flex;gap:6px;margin-top:6px"><button class="tb"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 1a3 3 0 00-3 3v8a3 3 0 006 0V4a3 3 0 00-3-3z"/><path d="M19 10v2a7 7 0 01-14 0v-2"/></svg> <span data-i18n="voice">Voz</span></button></div></div>
+    <div class="fd"><label class="fl" data-i18n="report_photo">Foto (obrigatória)</label><div class="pz"><svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="var(--ic)" stroke-width="1.5" style="filter:var(--ic-sh)"><path d="M23 19a2 2 0 01-2 2H3a2 2 0 01-2-2V8a2 2 0 012-2h4l2-3h6l2 3h4a2 2 0 012 2z"/><circle cx="12" cy="13" r="4"/></svg><div style="font-size:12px;color:var(--text-2);margin-top:4px" data-i18n="photo_tap">Toque para fotografar</div><div style="font-size:9px;color:var(--text-3);margin-top:4px" data-i18n="photo_hint">Compressão ~300KB · GPS capturado</div></div></div>
+    <div class="gps"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0118 0z"/><circle cx="12" cy="10" r="3"/></svg> -25.4284, -49.2733 · <span data-i18n="gps_auto">Automático</span></div>
+    <button class="bp rd" data-i18n="report_send">Enviar Reporte</button>
+  </div>
+</div>
+
+<!-- ====== HISTORY ====== -->
+<div class="pg" id="pg-history">
+  <div class="pg-body">
+    <button class="bs" onclick="nav('aircraft')" style="width:auto;padding:8px 14px;font-size:11px;margin-bottom:16px">&#8592; <span data-i18n="back">Voltar</span></button>
+    <div style="font-size:16px;font-weight:700;margin-bottom:4px" data-i18n="hist_title">Histórico e Auditoria</div>
+    <div style="font-size:11px;color:var(--text-3);margin-bottom:16px">PR-HTX · EC135 T3 · S/N 2104</div>
+    <!-- Asset Certificate -->
+    <div class="c">
+      <div style="background:var(--accent);padding:12px 14px;display:flex;align-items:center;justify-content:space-between"><div><div style="font:500 12px/1 var(--mono);color:#fff;letter-spacing:1.5px">FLYTCORE</div><div style="font-size:9px;color:rgba(255,255,255,.6)" data-i18n="asset_cert">Certificado de Ativo</div></div><div style="font:500 24px/1 var(--mono);color:#fff">92</div></div>
+      <div class="cb"><div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;font-size:11px">
+        <div><span style="color:var(--text-3)" data-i18n="total_hours">Horas Totais:</span> <span class="mono">4.872,3h</span></div>
+        <div><span style="color:var(--text-3)" data-i18n="total_cycles">Ciclos:</span> <span class="mono">2.341</span></div>
+        <div><span style="color:var(--text-3)" data-i18n="next_due">Próx. Vencimento:</span> <span class="mono" style="color:var(--green)">124h</span></div>
+        <div><span style="color:var(--text-3)">AD/SB:</span> <span class="mono" style="color:var(--green)">100%</span></div>
+        <div><span style="color:var(--text-3)" data-i18n="doc_complete">Completude Doc.:</span> <span class="mono" style="color:var(--green)">94%</span></div>
+        <div><span style="color:var(--text-3)" data-i18n="traceability">Rastreabilidade:</span> <span class="mono">88%</span></div>
+      </div></div>
+    </div>
+    <button class="bp" style="margin-bottom:16px" data-i18n="gen_pdf">Gerar PDF — Certificado de Ativo</button>
+    <!-- Maint History -->
+    <div class="sl" data-i18n="maint_history">Histórico de Manutenção</div>
+    <div class="c"><div class="cb">
+      <div class="hi"><div class="hd" style="background:var(--green)"></div><div style="flex:1"><div style="font-size:12px;font-weight:600">OS #0847 — Troca de filtros</div><div style="font-size:10px;color:var(--text-3);margin-top:2px">09/04 · João Costa · CANAC 4521</div><div class="hp"><div class="hpx">1</div><div class="hpx">2</div><div class="hpx">3</div><div class="hpx">4</div><div class="hpx">5</div></div></div></div>
+      <div class="hi"><div class="hd" style="background:var(--green)"></div><div style="flex:1"><div style="font-size:12px;font-weight:600">OS #0831 — Reparo hidráulico</div><div style="font-size:10px;color:var(--text-3);margin-top:2px">22/03 · Carlos Mendes · CANAC 3987</div><div class="hp"><div class="hpx">1</div><div class="hpx">2</div><div class="hpx">3</div></div></div></div>
+      <div class="hi"><div class="hd" style="background:var(--green)"></div><div style="flex:1"><div style="font-size:12px;font-weight:600">OS #0815 — Inspeção 600h</div><div style="font-size:10px;color:var(--text-3);margin-top:2px">01/03 · João Costa + Pedro Vieira</div><div class="hp"><div class="hpx">1</div><div class="hpx">2</div><div class="hpx">3</div><div class="hpx">4</div></div></div></div>
+    </div></div>
+    <!-- Report History -->
+    <div class="sl" data-i18n="report_history">Histórico de Reportes</div>
+    <div class="c"><div class="cb" style="font-size:11px">
+      <div class="hi"><div class="hd" style="background:var(--yellow)"></div><div style="flex:1"><div style="font-size:12px;font-weight:600">Vibração leve no pedal</div><div style="font-size:10px;color:var(--text-3);margin-top:2px">05/04 · Piloto Marcos Silva · Observação · Resolvido</div></div></div>
+      <div class="hi"><div class="hd" style="background:var(--green)"></div><div style="flex:1"><div style="font-size:12px;font-weight:600">Luz aviso hidráulico</div><div style="font-size:10px;color:var(--text-3);margin-top:2px">28/03 · Copiloto Ana Reis · Restrição · Resolvido</div></div></div>
+    </div></div>
+  </div>
+</div>
+
+<!-- ====== MAINTENANCE ====== -->
+<div class="pg" id="pg-maint">
+  <div class="pg-body">
+    <button class="bs" onclick="nav('aircraft')" style="width:auto;padding:8px 14px;font-size:11px;margin-bottom:16px">&#8592; <span data-i18n="back">Voltar</span></button>
+    <div style="font-size:16px;font-weight:700;margin-bottom:4px" data-i18n="maint_title">Executar Manutenção</div>
+    <div style="font:500 10px/1 var(--mono);color:var(--text-3);margin-bottom:12px">PR-HTX · EC135 T3 · <span data-i18n="maint_auth">Mecânico autenticado</span>: João Costa</div>
+
+    <!-- Multi-mechanic -->
+    <div class="crew">
+      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2"/><circle cx="9" cy="7" r="4"/></svg>
+      <span data-i18n="crew_also">Carlos Mendes também trabalha nesta aeronave</span>
+    </div>
+
+    <!-- Sub-tabs -->
+    <div style="display:flex;gap:0;margin-bottom:16px;border:1px solid var(--border)">
+      <button class="lo on" onclick="mtab(this,0)" data-i18n="tab_os">Ordem Serviço</button>
+      <button class="lo" onclick="mtab(this,1)" data-i18n="tab_req">Requisitar Peça</button>
+      <button class="lo" onclick="mtab(this,2)" data-i18n="tab_reqs">Últimas Requisições</button>
+    </div>
+
+    <!-- TAB 0: Work Order -->
+    <div class="mt" id="mt0">
+      <div class="c" style="border-left:3px solid var(--yellow)">
+        <div class="ch"><span class="ct" style="color:var(--accent)">OS #0849</span><span style="background:var(--yellow-bg);color:var(--yellow);padding:2px 8px;font-size:9px;font-weight:700">URGENTE</span></div>
+        <div class="cb">
+          <div style="font-size:13px;font-weight:600;margin-bottom:4px">Inspeção de 100h</div>
+          <div style="font-size:10px;color:var(--text-3);margin-bottom:4px" data-i18n="os_assigned">Atribuída: João Costa, Carlos Mendes</div>
+          <div style="font-size:10px;color:var(--text-3);margin-bottom:10px">6/10 <span data-i18n="tasks_done">tarefas concluídas</span></div>
+          <div style="height:4px;background:var(--bg-input);border:1px solid var(--border);overflow:hidden;margin-bottom:10px"><div style="width:60%;height:100%;background:var(--accent)"></div></div>
+          <!-- Done tasks -->
+          <div class="ti" style="background:var(--green-bg)"><div class="tc"><div class="ck ok">&#10003;</div><div><div style="font-size:13px;line-height:1.5">Drenar e substituir óleo do motor</div><div style="font-size:9px;color:var(--green);margin-top:4px">&#10003; João Costa · 10/04 14:32 · 2 fotos</div></div></div></div>
+          <div class="ti" style="background:var(--green-bg)"><div class="tc"><div class="ck ok">&#10003;</div><div><div style="font-size:13px;line-height:1.5">Inspecionar filtro partículas turbina</div><div style="font-size:9px;color:var(--green);margin-top:4px">&#10003; Carlos Mendes · 10/04 15:10 · 1 foto</div></div></div></div>
+          <!-- Pending tasks -->
+          <div class="ti"><div class="tc"><div class="ck" onclick="this.classList.toggle('ok');this.innerHTML=this.classList.contains('ok')?'&#10003;':''"></div><div><div style="font-size:13px;line-height:1.5">Verificar desgaste pastilhas freio rotor de cauda</div><div style="font-size:9px;color:var(--yellow);margin-top:4px" data-i18n="photo_req">Foto obrigatória</div></div></div>
+            <div class="ta">
+              <button class="tb w"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M23 19a2 2 0 01-2 2H3a2 2 0 01-2-2V8a2 2 0 012-2h4l2-3h6l2 3h4a2 2 0 012 2z"/><circle cx="12" cy="13" r="4"/></svg> Foto *</button>
+              <button class="tb"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 1a3 3 0 00-3 3v8a3 3 0 006 0V4a3 3 0 00-3-3z"/><path d="M19 10v2a7 7 0 01-14 0v-2"/></svg> Voz</button>
+              <button class="tb"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="3"/><path d="M12 1v6m0 6v6m-5.2-9.8l4.2 4.2m1.6-9.6l4.2 4.2"/></svg> Peça</button>
+            </div>
+          </div>
+          <div class="ti"><div class="tc"><div class="ck" onclick="this.classList.toggle('ok');this.innerHTML=this.classList.contains('ok')?'&#10003;':''"></div><div style="font-size:13px;line-height:1.5">Inspecionar cabos comando servo coletivo</div></div></div>
+          <div class="ti"><div class="tc"><div class="ck" onclick="this.classList.toggle('ok');this.innerHTML=this.classList.contains('ok')?'&#10003;':''"></div><div style="font-size:13px;line-height:1.5">Verificar torque parafusos fixação MGB</div></div></div>
+        </div>
+      </div>
+      <!-- Digital Signature -->
+      <div class="c"><div class="ch"><span class="ct" data-i18n="digital_sig">Assinatura Digital</span></div><div class="cb" style="font-size:11px;line-height:1.8">
+        <strong data-i18n="mechanic">Mecânico:</strong> João Costa · CANAC: 4521-MCA<br>
+        <strong>GPS:</strong> <span class="mono">-25.4284, -49.2733</span><br>
+        <strong data-i18n="device">Dispositivo:</strong> Samsung A54 · Android 14<br>
+        <strong>Hash:</strong> <span class="mono" style="font-size:9px;color:var(--text-3)">sha256:a3f2b1c8...</span>
+      </div></div>
+    </div>
+
+    <!-- TAB 1: Request Part -->
+    <div class="mt" id="mt1" style="display:none">
+      <div class="fd"><label class="fl">Part Number</label><input class="fi mono" placeholder="P/N ou nome..." value="6871103"></div>
+      <div class="fd"><label class="fl" data-i18n="quantity">Quantidade</label><input class="fi mono" type="number" value="1" style="width:100px"></div>
+      <div class="fd"><label class="fl" data-i18n="urgency">Urgência</label><div class="ug">
+        <div class="uo xr" onclick="su(this,'xr')"><div style="font-size:12px;font-weight:700;color:var(--red)">AOG</div></div>
+        <div class="uo" onclick="su(this,'xy')"><div style="font-size:12px;font-weight:700">Inspeção</div></div>
+        <div class="uo" onclick="su(this,'xb')"><div style="font-size:12px;font-weight:700">Kit</div></div>
+      </div></div>
+      <div class="fd"><label class="fl" data-i18n="problem_desc">Descrição</label><textarea class="fi" rows="3">Starter generator com ruído anormal. Tensão 26-29V.</textarea></div>
+      <div class="fd"><label class="fl" data-i18n="photo_comp">Foto (obrigatória)</label><div class="pz"><svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="var(--ic)" stroke-width="1.5" style="filter:var(--ic-sh)"><path d="M23 19a2 2 0 01-2 2H3a2 2 0 01-2-2V8a2 2 0 012-2h4l2-3h6l2 3h4a2 2 0 012 2z"/><circle cx="12" cy="13" r="4"/></svg><div style="font-size:12px;color:var(--text-2);margin-top:4px" data-i18n="photo_tap">Toque para fotografar</div></div></div>
+      <div class="gps"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0118 0z"/><circle cx="12" cy="10" r="3"/></svg> -25.4284, -49.2733</div>
+      <button class="bp" data-i18n="send_req">Enviar Requisição</button>
+    </div>
+
+    <!-- TAB 2: Recent Requests (all mechanics) -->
+    <div class="mt" id="mt2" style="display:none">
+      <div style="font-size:10px;color:var(--text-3);margin-bottom:12px;padding:6px 10px;background:var(--bg-alt);border:1px solid var(--border)" data-i18n="reqs_note">Requisições de todos os mecânicos para esta aeronave</div>
+      <div class="c" style="border-left:3px solid var(--green)"><div class="cb">
+        <div style="display:flex;justify-content:space-between;margin-bottom:8px"><span class="mono" style="font-size:12px;font-weight:600;color:var(--accent)">REQ-0408</span><span style="background:var(--green-bg);color:var(--green);padding:2px 8px;font-size:9px;font-weight:700" data-i18n="delivered">Entregue</span></div>
+        <div style="font-size:11px;margin-bottom:4px">Kit filtros inspeção · <strong>João Costa</strong></div>
+        <div class="ts"><div class="tr ok">&#10003;</div><div><div style="font-size:12px;font-weight:600" data-i18n="step_sent">Enviada</div><div style="font:400 9px/1 var(--mono);color:var(--text-3)">08/04 09:15</div></div></div>
+        <div class="ts"><div class="tr ok">&#10003;</div><div><div style="font-size:12px;font-weight:600" data-i18n="step_approved">Aprovada</div><div style="font:400 9px/1 var(--mono);color:var(--text-3)">08/04 10:02</div></div></div>
+        <div class="ts"><div class="tr ok">&#10003;</div><div><div style="font-size:12px;font-weight:600" data-i18n="step_delivered">Entregue</div><div style="font:400 9px/1 var(--mono);color:var(--text-3)">10/04 08:00</div></div></div>
+      </div></div>
+      <div class="c" style="border-left:3px solid var(--red)"><div class="cb">
+        <div style="display:flex;justify-content:space-between;margin-bottom:8px"><span class="mono" style="font-size:12px;font-weight:600;color:var(--accent)">REQ-0412</span><span style="background:var(--red-bg);color:var(--red);padding:2px 8px;font-size:9px;font-weight:700">AOG</span></div>
+        <div style="font-size:11px;margin-bottom:4px">6871103-A Starter Generator · <strong>Carlos Mendes</strong></div>
+        <div class="ts"><div class="tr ok">&#10003;</div><div><div style="font-size:12px;font-weight:600" data-i18n="step_sent">Enviada</div><div style="font:400 9px/1 var(--mono);color:var(--text-3)">11/04 09:15</div></div></div>
+        <div class="ts"><div class="tr now">&#9679;</div><div><div style="font-size:12px;font-weight:600;color:var(--red)" data-i18n="step_waiting">Aguardando peça — 94 dias</div></div></div>
+      </div></div>
+    </div>
+  </div>
+</div>
+
+<!-- ====== SETTINGS ====== -->
+<div class="pg" id="pg-settings">
+  <div class="pg-body">
+    <button class="bs" onclick="nav('scan')" style="width:auto;padding:8px 14px;font-size:11px;margin-bottom:16px">&#8592; <span data-i18n="back">Voltar</span></button>
+    <div style="font-size:16px;font-weight:700;margin-bottom:16px" data-i18n="settings_title">Configurações</div>
+    <div class="c"><div class="cb">
+      <div class="sr"><div><div style="font-size:13px;font-weight:500" data-i18n="set_theme">Tema</div></div><div class="tg" id="thTg" onclick="toggleTheme()"></div></div>
+      <div class="sr"><div><div style="font-size:13px;font-weight:500" data-i18n="set_lang">Idioma / Language / Idioma</div></div>
+        <div class="ls"><button class="lo on" onclick="setLang('pt',this)">PT</button><button class="lo" onclick="setLang('en',this)">EN</button><button class="lo" onclick="setLang('es',this)">ES</button></div>
+      </div>
+      <div class="sr"><div><div style="font-size:13px;font-weight:500" data-i18n="set_offline">Modo Offline</div></div><div class="tg" onclick="this.classList.toggle('on');document.getElementById('oflBar').classList.toggle('show')"></div></div>
+      <div class="sr"><div><div style="font-size:13px;font-weight:500" data-i18n="set_compress">Compressão de Foto</div><div style="font-size:10px;color:var(--text-3);margin-top:2px">~300KB</div></div><div class="tg on"></div></div>
+      <div class="sr"><div><div style="font-size:13px;font-weight:500" data-i18n="set_voice">Comando de Voz</div></div><div class="tg on"></div></div>
+    </div></div>
+    <div class="c"><div class="ch"><span class="ct" data-i18n="about">Sobre</span></div><div class="cb" style="font-size:11px;color:var(--text-3);line-height:1.8">
+      <strong>FlytCore Field</strong> v1.0 · Build 2026.04<br>
+      <span data-i18n="about_desc">Plataforma de Gestão de Ativos Físicos.</span><br>
+      AtivsCore — Asset Lifecycle Intelligence Engine
+    </div></div>
+  </div>
+</div>
+
+<!-- BOTTOM NAV (mobile only) -->
+<div class="bnav">
+  <button class="nt" onclick="nav('scan')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="18"/><line x1="9" y1="3" x2="9" y2="21"/><line x1="15" y1="3" x2="15" y2="21"/><line x1="3" y1="9" x2="21" y2="9"/><line x1="3" y1="15" x2="21" y2="15"/></svg><span data-i18n="nav_scan">Scan</span></button>
+  <button class="nt" onclick="nav('maint')" style="position:relative"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14.7 6.3a1 1 0 000 1.4l1.6 1.6a1 1 0 001.4 0l3.77-3.77a6 6 0 01-7.94 7.94l-6.91 6.91a2.12 2.12 0 01-3-3l6.91-6.91a6 6 0 017.94-7.94l-3.76 3.76z"/></svg><span style="position:relative" data-i18n="nav_tasks">Tarefas<span class="nt-badge">3</span></span></button>
+  <button class="nt" onclick="nav('history')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg><span data-i18n="nav_history">Histórico</span></button>
+  <button class="nt" onclick="nav('settings')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 00.33 1.82l.06.06a2 2 0 01-2.83 2.83l-.06-.06a1.65 1.65 0 00-1.82-.33 1.65 1.65 0 00-1 1.51V21a2 2 0 01-4 0v-.09A1.65 1.65 0 009 19.4a1.65 1.65 0 00-1.82.33l-.06.06a2 2 0 01-2.83-2.83l.06-.06A1.65 1.65 0 004.68 15a1.65 1.65 0 00-1.51-1H3a2 2 0 010-4h.09A1.65 1.65 0 004.6 9a1.65 1.65 0 00-.33-1.82l-.06-.06a2 2 0 012.83-2.83l.06.06A1.65 1.65 0 009 4.68a1.65 1.65 0 001-1.51V3a2 2 0 014 0v.09a1.65 1.65 0 001 1.51 1.65 1.65 0 001.82-.33l.06-.06a2 2 0 012.83 2.83l-.06.06A1.65 1.65 0 0019.4 9a1.65 1.65 0 001.51 1H21a2 2 0 010 4h-.09a1.65 1.65 0 00-1.51 1z"/></svg><span data-i18n="nav_config">Config</span></button>
+</div>
+
+</div><!-- /desk-main -->
+</div><!-- /shell-body -->
+</div><!-- /shell -->
+
+<script>
+const L={
+pt:{scan_title:'Escanear Aeronave',scan_sub:'Aponte a câmera para o QR Code',scan_simulate:'Simular Scan — PR-HTX',scan_manual:'Digitar prefixo manualmente',status_ok:'12 itens dentro do prazo',status_next:'Próximo vencimento: 124h',disclaimer:'\u26A0 ESTE STATUS NÃO É CERTIFICAÇÃO DE AERONAVEGABILIDADE. A liberação é responsabilidade exclusiva do profissional habilitado (RBAC 43/145).',actions_label:'Ações',btn_report:'Reportar Problema',btn_report_d:'Qualquer tripulante pode reportar',btn_history:'Histórico e Auditoria',btn_history_d:'Relatório completo da aeronave',btn_maint:'Executar Manutenção',btn_maint_d:'Acesso exclusivo para mecânicos',comp_urgent:'Componentes Urgentes',recent_reports:'Reportes Recentes',back:'Voltar',report_title:'Reportar Problema',report_sub:'Qualquer tripulante pode registrar uma ocorrência.',report_who:'Reportado por',report_name:'Nome',report_type:'Tipo',report_severity:'Severidade',report_desc:'Descrição',report_photo:'Foto (obrigatória)',report_send:'Enviar Reporte',role_pilot:'Piloto em Comando',role_copilot:'Copiloto',role_crew:'Tripulante',role_mech:'Mecânico',prob_vibration:'Vibração anormal',prob_noise:'Ruído atípico',prob_leak:'Vazamento',prob_instrument:'Falha de instrumento',prob_electrical:'Problema elétrico',prob_other:'Outro',sev_aog:'Não pode voar',sev_restrict:'Voa com limitação',sev_obs:'Monitorar',voice:'Voz',photo_tap:'Toque para fotografar',photo_hint:'Compressão ~300KB · GPS capturado',photo_req:'Foto obrigatória',gps_auto:'Automático',hist_title:'Histórico e Auditoria',asset_cert:'Certificado de Ativo',total_hours:'Horas Totais:',total_cycles:'Ciclos:',next_due:'Próx. Vencimento:',doc_complete:'Completude Doc.:',traceability:'Rastreabilidade:',gen_pdf:'Gerar PDF — Certificado de Ativo',maint_history:'Histórico de Manutenção',report_history:'Histórico de Reportes',maint_title:'Executar Manutenção',maint_auth:'Mecânico autenticado',tab_os:'Ordem Serviço',tab_req:'Requisitar Peça',tab_reqs:'Últimas Requisições',digital_sig:'Assinatura Digital',mechanic:'Mecânico:',device:'Dispositivo:',quantity:'Quantidade',urgency:'Urgência',problem_desc:'Descrição',photo_comp:'Foto (obrigatória)',send_req:'Enviar Requisição',delivered:'Entregue',step_sent:'Enviada',step_approved:'Aprovada',step_delivered:'Entregue',step_waiting:'Aguardando peça — 94 dias',settings_title:'Configurações',set_theme:'Tema',set_lang:'Idioma',set_offline:'Modo Offline',set_compress:'Compressão de Foto',set_voice:'Comando de Voz',about:'Sobre',about_desc:'Plataforma de Gestão de Ativos Físicos.',nav_scan:'Scan',nav_tasks:'Tarefas',nav_history:'Histórico',nav_config:'Config',offline:'Offline — 2 itens aguardando sync',login_sub:'Gestão de Ativos em Campo',password:'Senha',login_btn:'Entrar',login_secure:'Acesso seguro · AES-256 · 2FA disponível',crew_active:'2 mecânicos ativos nesta aeronave',crew_also:'Carlos Mendes também trabalha nesta aeronave',os_assigned:'Atribuída: João Costa, Carlos Mendes',tasks_done:'tarefas concluídas',reqs_note:'Requisições de todos os mecânicos para esta aeronave'},
+en:{scan_title:'Scan Aircraft',scan_sub:'Point camera at QR Code',scan_simulate:'Simulate Scan — PR-HTX',scan_manual:'Enter prefix manually',status_ok:'12 items within limits',status_next:'Next due: 124h',disclaimer:'\u26A0 THIS STATUS IS NOT AN AIRWORTHINESS CERTIFICATION. Release is the sole responsibility of the authorized professional (RBAC 43/145).',actions_label:'Actions',btn_report:'Report Problem',btn_report_d:'Any crew member can report',btn_history:'History & Audit',btn_history_d:'Full aircraft report',btn_maint:'Perform Maintenance',btn_maint_d:'Mechanic access only',comp_urgent:'Urgent Components',recent_reports:'Recent Reports',back:'Back',report_title:'Report Problem',report_sub:'Any crew member can log an occurrence.',report_who:'Reported by',report_name:'Name',report_type:'Type',report_severity:'Severity',report_desc:'Description',report_photo:'Photo (required)',report_send:'Submit Report',role_pilot:'Pilot in Command',role_copilot:'Co-pilot',role_crew:'Crew Member',role_mech:'Mechanic',prob_vibration:'Abnormal vibration',prob_noise:'Unusual noise',prob_leak:'Leak',prob_instrument:'Instrument failure',prob_electrical:'Electrical issue',prob_other:'Other',sev_aog:'Cannot fly',sev_restrict:'Fly with restriction',sev_obs:'Monitor',voice:'Voice',photo_tap:'Tap to take photo',photo_hint:'Auto compress ~300KB · GPS captured',photo_req:'Photo required',gps_auto:'Auto',hist_title:'History & Audit',asset_cert:'Asset Certificate',total_hours:'Total Hours:',total_cycles:'Cycles:',next_due:'Next Due:',doc_complete:'Doc. Completeness:',traceability:'Traceability:',gen_pdf:'Generate PDF — Asset Certificate',maint_history:'Maintenance History',report_history:'Report History',maint_title:'Perform Maintenance',maint_auth:'Authenticated mechanic',tab_os:'Work Order',tab_req:'Request Part',tab_reqs:'Recent Requests',digital_sig:'Digital Signature',mechanic:'Mechanic:',device:'Device:',quantity:'Quantity',urgency:'Urgency',problem_desc:'Description',photo_comp:'Photo (required)',send_req:'Send Request',delivered:'Delivered',step_sent:'Sent',step_approved:'Approved',step_delivered:'Delivered',step_waiting:'Waiting for part — 94 days',settings_title:'Settings',set_theme:'Theme',set_lang:'Language',set_offline:'Offline Mode',set_compress:'Photo Compression',set_voice:'Voice Command',about:'About',about_desc:'Physical Asset Management Platform.',nav_scan:'Scan',nav_tasks:'Tasks',nav_history:'History',nav_config:'Settings',offline:'Offline — 2 items pending sync',login_sub:'Field Asset Management',password:'Password',login_btn:'Sign In',login_secure:'Secure access · AES-256 · 2FA available',crew_active:'2 mechanics active on this aircraft',crew_also:'Carlos Mendes is also working on this aircraft',os_assigned:'Assigned: João Costa, Carlos Mendes',tasks_done:'tasks completed',reqs_note:'Requests from all mechanics for this aircraft'},
+es:{scan_title:'Escanear Aeronave',scan_sub:'Apunte la cámara al código QR',scan_simulate:'Simular Scan — PR-HTX',scan_manual:'Ingresar prefijo manualmente',status_ok:'12 ítems dentro del plazo',status_next:'Próximo vencimiento: 124h',disclaimer:'\u26A0 ESTE ESTADO NO ES CERTIFICACIÓN DE AERONAVEGABILIDAD. La liberación es responsabilidad exclusiva del profesional habilitado (RBAC 43/145).',actions_label:'Acciones',btn_report:'Reportar Problema',btn_report_d:'Cualquier tripulante puede reportar',btn_history:'Historial y Auditoría',btn_history_d:'Informe completo de la aeronave',btn_maint:'Ejecutar Mantenimiento',btn_maint_d:'Acceso exclusivo para mecánicos',comp_urgent:'Componentes Urgentes',recent_reports:'Reportes Recientes',back:'Volver',report_title:'Reportar Problema',report_sub:'Cualquier tripulante puede registrar una ocurrencia.',report_who:'Reportado por',report_name:'Nombre',report_type:'Tipo',report_severity:'Severidad',report_desc:'Descripción',report_photo:'Foto (obligatoria)',report_send:'Enviar Reporte',role_pilot:'Piloto al Mando',role_copilot:'Copiloto',role_crew:'Tripulante',role_mech:'Mecánico',prob_vibration:'Vibración anormal',prob_noise:'Ruido atípico',prob_leak:'Fuga',prob_instrument:'Falla de instrumento',prob_electrical:'Problema eléctrico',prob_other:'Otro',sev_aog:'No puede volar',sev_restrict:'Vuela con limitación',sev_obs:'Monitorear',voice:'Voz',photo_tap:'Toque para fotografiar',photo_hint:'Compresión ~300KB · GPS capturado',photo_req:'Foto obligatoria',gps_auto:'Automático',hist_title:'Historial y Auditoría',asset_cert:'Certificado de Activo',total_hours:'Horas Totales:',total_cycles:'Ciclos:',next_due:'Próx. Vencimiento:',doc_complete:'Completitud Doc.:',traceability:'Trazabilidad:',gen_pdf:'Generar PDF — Certificado de Activo',maint_history:'Historial de Mantenimiento',report_history:'Historial de Reportes',maint_title:'Ejecutar Mantenimiento',maint_auth:'Mecánico autenticado',tab_os:'Orden Servicio',tab_req:'Solicitar Pieza',tab_reqs:'Últimas Solicitudes',digital_sig:'Firma Digital',mechanic:'Mecánico:',device:'Dispositivo:',quantity:'Cantidad',urgency:'Urgencia',problem_desc:'Descripción',photo_comp:'Foto (obligatoria)',send_req:'Enviar Solicitud',delivered:'Entregado',step_sent:'Enviada',step_approved:'Aprobada',step_delivered:'Entregado',step_waiting:'Esperando pieza — 94 días',settings_title:'Configuración',set_theme:'Tema',set_lang:'Idioma',set_offline:'Modo Sin Conexión',set_compress:'Compresión de Foto',set_voice:'Comando de Voz',about:'Acerca de',about_desc:'Plataforma de Gestión de Activos Físicos.',nav_scan:'Scan',nav_tasks:'Tareas',nav_history:'Historial',nav_config:'Config',offline:'Sin conexión — 2 ítems pendientes',login_sub:'Gestión de Activos en Campo',password:'Contraseña',login_btn:'Ingresar',login_secure:'Acceso seguro · AES-256 · 2FA disponible',crew_active:'2 mecánicos activos en esta aeronave',crew_also:'Carlos Mendes también trabaja en esta aeronave',os_assigned:'Asignada: João Costa, Carlos Mendes',tasks_done:'tareas completadas',reqs_note:'Solicitudes de todos los mecánicos para esta aeronave'}
+};
+let cL='pt';
+function setLang(l,el){cL=l;document.querySelectorAll('.ls .lo').forEach(b=>b.classList.remove('on'));if(el)el.classList.add('on');document.querySelectorAll('[data-i18n]').forEach(n=>{const k=n.getAttribute('data-i18n');if(L[l]&&L[l][k]){if(n.tagName==='INPUT'||n.tagName==='TEXTAREA')n.placeholder=L[l][k];else n.textContent=L[l][k]}})}
+let dk=false;
+function toggleTheme(){dk=!dk;document.body.setAttribute('data-theme',dk?'dark':'light');document.getElementById('thBtn').innerHTML=dk?'&#9790;':'&#9788;';document.getElementById('thTg').classList.toggle('on',dk);document.querySelector('meta[name="theme-color"]').content=dk?'#0E0E0E':'#F2F1EE'}
+function nav(id){document.querySelectorAll('.pg').forEach(p=>p.classList.remove('on'));const t=document.getElementById('pg-'+id);if(t){void t.offsetWidth;t.classList.add('on')}const m={scan:0,aircraft:0,report:0,maint:1,history:2,settings:3,login:-1};document.querySelectorAll('.nt').forEach((t,i)=>t.classList.toggle('on',i===(m[id]??-1)))}
+function mtab(el,i){document.querySelectorAll('#pg-maint .lo').forEach(b=>b.classList.remove('on'));el.classList.add('on');document.querySelectorAll('.mt').forEach((t,j)=>t.style.display=j===i?'block':'none')}
+function dnav(id,el){document.querySelectorAll('.ds-item').forEach(b=>b.classList.remove('on'));if(el)el.classList.add('on');nav(id)}
+function su(el,c){el.parentElement.querySelectorAll('.uo').forEach(o=>o.classList.remove('xr','xy','xb'));el.classList.add(c)}
+</script>
+</body>
+</html>
